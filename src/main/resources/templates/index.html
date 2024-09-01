@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Task Manager</h2>
+
+    <form th:action="@{/create}" th:object="${newTask}" method="post">
+        <div class="form-group">
+            <label for="description">Task Description:</label>
+            <input type="text" class="form-control" id="description" name="description" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Task</button>
+    </form>
+
+    <h3>All Tasks:</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Description</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task, stat : ${allTasksList.content}">
+            <th scope="row" th:text="${stat.index + (allTasksList.number * allTasksList.size) + 1}"></th>
+            <td th:text="${task.description}"></td>
+            <td th:text="${task.status}"></td>
+            <td>
+                <a th:href="@{/updateTask/{id}(id=${task.id})}" class="btn btn-info btn-sm">Update</a>
+                <a th:href="@{/deleteTask/{id}(id=${task.id})}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <a th:if="${allTasksList.hasPrevious()}"
+           th:href="@{'/?page=' + ${allTasksList.previousPageable().pageNumber} + '&size=' + ${allTasksList.size}}"
+           class="btn btn-default">Previous</a>
+        <span th:text="${allTasksList.number + 1}"></span> / <span th:text="${allTasksList.totalPages}"></span>
+        <a th:if="${allTasksList.hasNext()}"
+           th:href="@{'/?page=' + ${allTasksList.nextPageable().pageNumber} + '&size=' + ${allTasksList.size}}"
+           class="btn btn-default">Next</a>
+    </div>
+
+</div>
+
+</body>
+</html>
